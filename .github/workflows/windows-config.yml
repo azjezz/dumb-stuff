@@ -1,0 +1,24 @@
+name: Raw IPConfig Dumper
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  dump-ipconfig:
+    name: Dump on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-2025, windows-2022, windows-11-arm]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Run ipconfig natively
+        shell: cmd
+        run: ipconfig /all > ipconfig_${{ matrix.os }}.txt
+
+      - name: Upload raw artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipconfig-raw-${{ matrix.os }}
+          path: ipconfig_${{ matrix.os }}.txt
